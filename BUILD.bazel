@@ -1,0 +1,25 @@
+load("@foo_pip_deps//:requirements.bzl", "requirement")
+load("@rules_python//python:defs.bzl", "py_binary", "py_library")
+load("@rules_python//python:pip.bzl", "compile_pip_requirements")
+
+compile_pip_requirements(
+    name = "python_requirements",
+    requirements_in = ":requirements.txt",
+    requirements_txt = ":requirements_lock.txt",
+    tags = ["manual"],
+)
+
+py_library(
+    name = "foo",
+    srcs = ["foo.py"],
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [requirement("matplotlib")],
+)
+
+py_binary(
+    name = "main",
+    srcs = ["main.py"],
+    visibility = ["//visibility:public"],
+    deps = ["foo"],
+)
