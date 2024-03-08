@@ -76,6 +76,25 @@ versions available for this wheel. This wheel supports the following Python vers
 
 This error goes away if you remove the dependency on `@foo`.
 
+## Attempt to override the original `foo_pip_deps`
+
+Adding this to `bar/MODULE.bazel`:
+
+```starlark
+pip.parse(
+    hub_name = "foo_pip_deps",
+    python_version = "3.9",
+    requirements_lock = "@bar//:requirements_lock.txt",
+)
+use_repo(pip, "foo_pip_deps")
+
+```
+
+Produces the following error:
+```
+Error in fail: Duplicate cross-module pip hub named 'foo_pip_deps': pip hub names must be unique across modules. First defined by module 'bar', second attempted by module 'foo'
+```
+
 # Fixes for now
 
 This can all be fixed by patching the `foo` repository's `MODULE.bazel` file but it would be good to have a neater solution.
